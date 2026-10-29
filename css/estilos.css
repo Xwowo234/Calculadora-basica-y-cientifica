@@ -1,0 +1,329 @@
+
+
+
+:root {
+  --fondo: #e9edf2;
+  --cuerpo: #1f2430;
+  --cuerpo-borde: #2c3342;
+  --pantalla: #151922;
+  --texto: #f3f5f8;
+  --texto-tenue: #8a93a6;
+
+  --tecla: #6c416e;
+  --tecla-hover: #384052;
+  --tecla-activa: #222835;
+  --secundaria: #4a5366;
+  --secundaria-hover: #576178;
+  --operador: #583df2;
+  --operador-hover: #f56161;
+  --funcion: #e6d011;
+  --funcion-hover: #d3d03d;
+  --limpiar: #4fd9c2;
+  --limpiar-hover: #68e3d9;
+  --igual: #3fa66b;
+  --igual-hover: #4fbd7d;
+  --error: #ff6b6b;
+
+  --radio: 14px;
+  --separacion: 10px;
+  --fuente: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --fuente-numeros: "Consolas", "SF Mono", "Roboto Mono", monospace;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 80vh;
+  display: flex;               
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--fondo);
+  font-family: var(--fuente);
+}
+
+/* ---------- Contenedor principal ---------- */
+.calculadora {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--cuerpo);
+  border: 1px solid var(--cuerpo-borde);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(20, 25, 35, 0.35);
+  transition: max-width 0.3s ease;
+}
+
+/* En modo científico el cuerpo se ensancha para el panel extra */
+.calculadora.modo-cientifico {
+  max-width: 800px;
+}
+
+/* ---------- Cabecera y selector de modo ---------- */
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texto-tenue);
+  letter-spacing: 0.04em;
+}
+
+.selector-modo {
+  display: flex;
+  padding: 3px;
+  background: var(--pantalla);
+  border-radius: 999px;
+}
+
+.modo {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 1300px;
+  background: transparent;
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.modo:hover {
+  color: var(--texto);
+}
+
+.modo.seleccionado {
+  background: var(--operador);
+  color: #1b1b1b;
+  font-weight: 600;
+}
+
+
+.pantalla {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-height: 108px;
+  padding: 14px 16px;
+  background: var(--pantalla);
+  border-radius: var(--radio);
+  overflow: hidden;
+  user-select: none;
+}
+
+.indicador-angulo {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--operador);
+  letter-spacing: 0.08em;
+  visibility: hidden;          
+}
+
+.modo-cientifico .indicador-angulo {
+  visibility: visible;
+}
+
+.expresion {
+  min-height: 1.3em;
+  max-width: 100%;
+  font-family: var(--fuente-numeros);
+  font-size: 0.95rem;
+  color: var(--texto-tenue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultado {
+  max-width: 100%;
+  font-family: var(--fuente-numeros);
+  font-size: 2.4rem;
+  color: var(--texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+
+/* Números largos: JS agrega esta clase para reducir la fuente */
+.resultado.largo {
+  font-size: 1.6rem;
+}
+
+/* Estado de error: JS agrega "con-error" al contenedor */
+.con-error .resultado {
+  color: var(--error);
+  font-family: var(--fuente);
+  font-size: 1.25rem;
+  white-space: normal;
+  text-align: right;
+}
+
+.con-error .pantalla {
+  animation: sacudir 0.35s;
+}
+
+@keyframes sacudir {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-5px); }
+  75%      { transform: translateX(5px); }
+}
+
+/* ---------- Teclados (CSS Grid) ---------- */
+.panel-basico,
+.panel-cientifico {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--separacion);
+}
+
+/* El panel científico va oculto en modo básico */
+.panel-cientifico {
+  display: none;
+}
+
+/* Modo científico: dos columnas (funciones | teclado básico) */
+.calculadora.modo-cientifico {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  grid-template-areas:
+    "cabecera  cabecera"
+    "pantalla  pantalla"
+    "cientif   basico"
+    "pie       pie";
+  gap: 14px;
+}
+
+.modo-cientifico .cabecera         { grid-area: cabecera; }
+.modo-cientifico .pantalla         { grid-area: pantalla; }
+.modo-cientifico .panel-basico     { grid-area: basico; }
+.modo-cientifico .pie              { grid-area: pie; }
+
+.modo-cientifico .panel-cientifico {
+  grid-area: cientif;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-content: stretch;
+}
+
+/* ---------- Teclas ---------- */
+.tecla {
+  min-height: 56px;
+  border: none;
+  border-radius: var(--radio);
+  background: var(--tecla);
+  color: var(--texto);
+  font-family: var(--fuente);
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+  transition: background 0.15s, transform 0.08s, box-shadow 0.08s, opacity 0.2s;
+  user-select: none;
+}
+
+.tecla:hover {
+  background: var(--tecla-hover);
+}
+
+/* Efecto al presionar (:active y la clase "presionada" que pone JS) */
+.tecla:active,
+.tecla.presionada {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  background: var(--tecla-activa);
+}
+
+.tecla:focus-visible,
+.modo:focus-visible {
+  outline: 2px solid var(--operador);
+  outline-offset: 2px;
+}
+
+/* Estado deshabilitado */
+.tecla:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.tecla:disabled:hover {
+  background: var(--tecla);
+}
+
+/* Variantes de color */
+.tecla--secundaria            { background: var(--secundaria); }
+.tecla--secundaria:hover      { background: var(--secundaria-hover); }
+
+.tecla--operador              { background: var(--operador); color: #1b1b1b; font-weight: 600; }
+.tecla--operador:hover        { background: var(--operador-hover); }
+
+.tecla--funcion               { background: var(--funcion); font-size: 1.05rem; }
+.tecla--funcion:hover         { background: var(--funcion-hover); }
+
+/* xⁿ es función científica pero se comporta como operador */
+.tecla--funcion.tecla--operador       { background: var(--operador); }
+.tecla--funcion.tecla--operador:hover { background: var(--operador-hover); }
+
+.tecla--limpiar               { background: var(--limpiar); font-weight: 700; }
+.tecla--limpiar:hover         { background: var(--limpiar-hover); }
+
+.tecla--igual                 { background: var(--igual); font-weight: 700; }
+.tecla--igual:hover           { background: var(--igual-hover); }
+
+.tecla--angulo                { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; }
+
+/* Operador pendiente: se queda resaltado hasta escribir el segundo número */
+.tecla--operador.operador-activo {
+  background: var(--texto);
+  color: var(--cuerpo);
+}
+
+/* ---------- Pie ---------- */
+.pie {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--texto-tenue);
+}
+
+/* ---------- Pantallas pequeñas ---------- */
+@media (max-width: 520px) {
+  /* En celular el modo científico se apila en una sola columna */
+  .calculadora.modo-cientifico {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "cabecera"
+      "pantalla"
+      "cientif"
+      "basico"
+      "pie";
+  }
+
+  .modo-cientifico .panel-cientifico {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tecla {
+    min-height: 50px;
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Christian Alberto Torales Pérez">
+  <meta name="description" content="Tarea 4: calculadora básica y científica — Programación Web">
+  <title>Calculadora</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- Contenedor principal. JS le agrega/quita las clases
+       "modo-cientifico" y "con-error" según el estado. -->
+  <main class="calculadora" id="calculadora">
+
+    <!-- Control para cambiar de modo -->
+    <header class="cabecera">
+      <h1 class="titulo">Calculadora</h1>
+      <div class="selector-modo" role="group" aria-label="Modo de operación">
+        <button type="button" class="modo seleccionado" data-modo="basico" aria-pressed="true">Básico</button>
+        <button type="button" class="modo" data-modo="cientifico" aria-pressed="false">Científico</button>
+      </div>
+    </header>
+
+    <!-- Pantalla: no es un <input>, así que no se puede escribir con el teclado -->
+    <section class="pantalla" aria-live="polite">
+      <span class="indicador-angulo" id="indicador-angulo">DEG</span>
+      <div class="expresion" id="expresion"></div>
+      <div class="resultado" id="resultado">0</div>
+    </section>
+
+    <!-- Funciones científicas (solo visibles y habilitadas en modo científico) -->
+    <section class="panel-cientifico" aria-label="Funciones científicas">
+      <button type="button" class="tecla tecla--funcion" data-accion="funcion" data-fn="seno">sin</button>
+      <button type="button" class="tecla tecla--funcion" data-accion="funcion" data-fn="coseno">cos</button>
+      <button type="button" class="tecla tecla--funcion" data-accion="funcion" data-fn="tangente">tan</button>
+      <button type="button" class="tecla tecla--funcion tecla--angulo" data-accion="angulo" title="Cambiar grados / radianes">DEG</button>
+      <button type="button" class="tecla tecla--funcion" data-accion="funcion" data-fn="raiz" title="Raíz cuadrada">√x</button>
+      <button type="button" class="tecla tecla--funcion" data-accion="funcion" data-fn="cuadrado" title="Cuadrado">x²</button>
+      <button type="button" class="tecla tecla--funcion tecla--operador" data-accion="operador" data-op="potencia" title="Potencia N">xⁿ</button>
+      <button type="button" class="tecla tecla--funcion" data-accion="funcion" data-fn="factorial" title="Factorial">x!</button>
+    </section>
+
+    <!-- Teclado básico -->
+    <section class="panel-basico" aria-label="Teclado básico">
+      <button type="button" class="tecla tecla--limpiar" data-accion="limpiar" title="Limpiar todo">C</button>
+      <button type="button" class="tecla tecla--secundaria" data-accion="borrar" title="Borrar último dígito">⌫</button>
+      <button type="button" class="tecla tecla--secundaria" data-accion="porcentaje" title="Porcentaje">%</button>
+      <button type="button" class="tecla tecla--operador" data-accion="operador" data-op="division" title="Dividir">÷</button>
+
+      <button type="button" class="tecla" data-accion="numero" data-valor="7">7</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="8">8</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="9">9</button>
+      <button type="button" class="tecla tecla--operador" data-accion="operador" data-op="multiplicacion" title="Multiplicar">×</button>
+
+      <button type="button" class="tecla" data-accion="numero" data-valor="4">4</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="5">5</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="6">6</button>
+      <button type="button" class="tecla tecla--operador" data-accion="operador" data-op="resta" title="Restar">−</button>
+
+      <button type="button" class="tecla" data-accion="numero" data-valor="1">1</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="2">2</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="3">3</button>
+      <button type="button" class="tecla tecla--operador" data-accion="operador" data-op="suma" title="Sumar">+</button>
+
+      <button type="button" class="tecla tecla--secundaria" data-accion="signo" title="Cambiar signo">±</button>
+      <button type="button" class="tecla" data-accion="numero" data-valor="0">0</button>
+      <button type="button" class="tecla" data-accion="decimal" title="Punto decimal">.</button>
+      <button type="button" class="tecla tecla--igual" data-accion="igual" title="Resultado">=</button>
+    </section>
+
+    <footer class="pie">Christian Alberto Torales Pérez · 5CM52 · Programación Web</footer>
+  </main>
+
+  <!-- Primero la lógica, luego la interfaz que la usa -->
+  <script src="js/calculadora.js"></script>
+  <script src="js/interfaz.js"></script>
+</body>
+</html>
